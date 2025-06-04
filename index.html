@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title> Food donation </title>
+  <title>Food Donation form </title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body { font-family: Arial, sans-serif; margin: 0; background: #f6f8fa; }
@@ -16,52 +16,81 @@
     button:hover { background: #283593; }
     .donations { margin-top: 2rem; }
     .donation-card { background: #e3eafc; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; }
+    .food-group { display: flex; gap: 0.5rem; align-items: center; }
+    .remove-food { background: #e57373; color: #fff; border: none; border-radius: 4px; padding: 0.3rem 0.7rem; cursor: pointer; }
+    .remove-food:hover { background: #b71c1c; }
     @media (max-width: 700px) {
       main { margin: 1rem; padding: 1rem; }
+      .food-group { flex-direction: column; align-items: stretch; }
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Food donation</h1>
-    <p> Donate and help reduce food waste!</p>
+    <h1>Donations here</h1>
+    <p> Donate today and help reduce food waste!</p>
   </header>
   <main>
     <h2>Food Donation Form</h2>
-    <!-- FormSubmit integration: form action points to your email -->
     <form action="https://formsubmit.co/Oskar_bernqvist@mis-munich.de" method="POST" id="donationForm">
-      <!-- Optional: Prevent spam -->
       <input type="hidden" name="_captcha" value="false">
-      <!-- Optional: Redirect to thank you page or message after submit -->
-      <!-- <input type="hidden" name="_next" value="https://yourdomain.com/thankyou.html"> -->
 
       <label for="donorName">Your Name</label>
-      <input type="text" id="donorName" name="Donor Name" required placeholder=" your name here">
+      <input type="text" id="donorName" name="Donor Name" required placeholder="Enter your name">
 
-      <label for="foodItem">Food Item</label>
-      <input type="text" id="foodItem" name="Food Item" required placeholder="e.g. rice, vegtables, etc.">
-
-      <label for="quantity">Quantity</label>
-      <input type="text" id="quantity" name="Quantity" required placeholder=" kg, amount, etc. ">
+      <label>Food Items</label>
+      <div id="food-items">
+        <div class="food-group">
+          <input type="text" name="Food Item[]" required placeholder="e.g. Sandwiches, Rice, Fruits">
+          <input type="text" name="Quantity[]" required placeholder="e.g. 5 meals, 2kg">
+          <button type="button" class="remove-food" onclick="removeFood(this)" style="display:none;">Remove</button>
+        </div>
+      </div>
+      <button type="button" onclick="addFood()">Add another food</button>
 
       <label for="expiry">Best Before (Date & Time)</label>
       <input type="datetime-local" id="expiry" name="Best Before" required>
 
       <label for="location">Pickup Location</label>
-      <input type="text" id="location" name="Pickup Location" required placeholder="e.g. brook street 123 ">
+      <input type="text" id="location" name="Pickup Location" required placeholder="e.g. 123 Main St, City">
 
       <label for="notes">Additional Notes</label>
-      <textarea id="notes" name="Notes" rows="2" placeholder=" allergies, packaging info, etc."></textarea>
+      <textarea id="notes" name="Notes" rows="2" placeholder="Any allergies, packaging info, etc."></textarea>
 
       <button type="submit">Submit Donation</button>
     </form>
 
     <section class="donations">
-      <h2></h2>
+      <h2>How It Works</h2>
       <div>
-        <p>Fill out the form above to donate food. Your submission will be sent directly to Oskar Bernqvist , and he will arrange pickup with local charities and those in need. Thank you for helping reduce food waste!</p>
+        <p>Fill out the form above to donate  food. Your submission will be sent directly to Oskar Bernqvist, and we He arrange pickup with local charities or those in need. Thank you for helping reduce food waste!</p>
       </div>
     </section>
   </main>
+  <script>
+    function addFood() {
+      const foodItemsDiv = document.getElementById('food-items');
+      const group = document.createElement('div');
+      group.className = 'food-group';
+      group.innerHTML = `
+        <input type="text" name="Food Item[]" required placeholder="e.g. Sandwiches, Rice, Fruits">
+        <input type="text" name="Quantity[]" required placeholder="e.g. 5 meals, 2kg">
+        <button type="button" class="remove-food" onclick="removeFood(this)">Remove</button>
+      `;
+      foodItemsDiv.appendChild(group);
+
+      // Show remove buttons on all except the first
+      const removeButtons = document.querySelectorAll('.remove-food');
+      removeButtons.forEach(btn => btn.style.display = 'inline-block');
+      removeButtons[0].style.display = 'none'; // Hide remove on first
+    }
+
+    function removeFood(btn) {
+      btn.parentElement.remove();
+      // Ensure at least one food group remains and hide remove on first
+      const removeButtons = document.querySelectorAll('.remove-food');
+      if (removeButtons.length > 0) removeButtons[0].style.display = 'none';
+    }
+  </script>
 </body>
 </html>
